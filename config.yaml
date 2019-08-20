@@ -1,9 +1,11 @@
 heartbeatEndpoint:
   port: 80
+  path: "heartbeat"
   responseCode: 200
   responseMessage: "OK"
 metricsEndpoint:
   enabled: true
   port: 9100
+  path: "/metrics"
   basicAuthEnabled: true
   basicAuthUsername: "developer"

@@ -25,6 +25,7 @@ type HeartbeatOpts struct {
 	Port            int    `yaml:"port"`
 	ResponseCode    int    `yaml:"responseCode"`
 	ResponseMessage string `yaml:"responseMessage"`
+	Path            string `yaml:"path"`
 }
 
 // MetricsOpts provides the configuration for the metrics endpoint
@@ -32,6 +33,7 @@ type MetricsOpts struct {
 	Enabled          bool   `yaml:"enabled"`
 	BasicAuthEnabled bool   `yaml:"basicAuthEnabled"`
 	Port             int    `yaml:"port"`
+	Path             string `yaml:"path"`
 	Username         string `yaml:"basicAuthUsername"`
 	Password         string `yaml:"-"`
 }
@@ -51,6 +53,12 @@ func New(config, logLevel string) *Opts {
 			Port:            80,
 			ResponseCode:    200,
 			ResponseMessage: "OK",
+			Path:            "/heartbeat",
+		},
+		MetricsOpts: MetricsOpts{
+			Port:    9100,
+			Enabled: true,
+			Path:    "/metrics",
 		},
 		LogLevel:   logLevel,
 		ConfigFile: config,
@@ -84,6 +92,7 @@ func (o *Opts) InitOpts() error {
 	if err = o.validateOpts(); err != nil {
 		return err
 	}
+
 	log.Debug("Configuration is valid")
 	return nil
 
@@ -91,6 +100,10 @@ func (o *Opts) InitOpts() error {
 
 func (o *Opts) validateOpts() error {
 	var isInValid bool
+
+	o.HeartbeatOpts.Path = checkHandlerPath(o.HeartbeatOpts.Path)
+	o.MetricsOpts.Path = checkHandlerPath(o.MetricsOpts.Path)
+
 	if o.HeartbeatOpts.Port == o.MetricsOpts.Port {
 		log.Errorf("Hearbeat endpoint and metrics endpoint port can not be equal. Current Port for both is %d", o.HeartbeatOpts.Port)
 		isInValid = true
@@ -120,4 +133,13 @@ func (o *Opts) validateOpts() error {
 	}
 
 	return nil
+}
+
+func checkHandlerPath(path string) string {
+	log.Debugf("Check if provided path \"%s\" is missing \"/\"", path)
+	splitted := []byte(path)
+	if splitted[0] != '/' {
+		return fmt.Sprintf("/%s", path)
+	}
+	return path
 }
