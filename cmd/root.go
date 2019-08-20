@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/fwiedmann/heartbeat/pkg/endpoint"
 	"github.com/fwiedmann/heartbeat/pkg/opts"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +18,11 @@ var rootCmd = cobra.Command{
 		if err := o.InitOpts(); err != nil {
 			return err
 		}
+		if err := endpoint.StartHeartbeatEndpoint(o.HeartbeatOpts); err != nil {
+			return err
+		}
 		return nil
+
 	},
 }
 
