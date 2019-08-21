@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fwiedmann/heartbeat/pkg/metrics"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/fwiedmann/heartbeat/pkg/opts"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 // StartHeartbeatEndpoint starts the heartbeat endpoint
@@ -28,6 +31,9 @@ func createHandler(o opts.HeartbeatOpts) func(w http.ResponseWriter, r *http.Req
 	log.Debugf("Created HeartbeatHandler with response code: \"%d\", response message: \"%s\"", o.ResponseCode, o.ResponseMessage)
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Infof("Incoming request: Host \"%s\", Method: \"%s\"  ", r.Host, r.Method)
+
+		metrics.HeartbeatRequester.With(prometheus.Labels{"host": r.Host, "method": r.Method}).Inc()
+		metrics.HeartbeatTotalRequests.With(prometheus.Labels{"method": r.Method}).Inc()
 
 		w.WriteHeader(o.ResponseCode)
 		w.Write([]byte(o.ResponseMessage))

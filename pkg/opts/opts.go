@@ -30,12 +30,9 @@ type HeartbeatOpts struct {
 
 // MetricsOpts provides the configuration for the metrics endpoint
 type MetricsOpts struct {
-	Enabled          bool   `yaml:"enabled"`
-	BasicAuthEnabled bool   `yaml:"basicAuthEnabled"`
-	Port             int    `yaml:"port"`
-	Path             string `yaml:"path"`
-	Username         string `yaml:"basicAuthUsername"`
-	Password         string `yaml:"-"`
+	Enabled bool   `yaml:"enabled"`
+	Port    int    `yaml:"port"`
+	Path    string `yaml:"path"`
 }
 
 // Opts config
@@ -56,9 +53,8 @@ func New(config, logLevel string) *Opts {
 			Path:            "/heartbeat",
 		},
 		MetricsOpts: MetricsOpts{
-			Port:    9100,
-			Enabled: true,
-			Path:    "/metrics",
+			Port: 9100,
+			Path: "/metrics",
 		},
 		LogLevel:   logLevel,
 		ConfigFile: config,
@@ -107,23 +103,6 @@ func (o *Opts) validateOpts() error {
 	if o.HeartbeatOpts.Port == o.MetricsOpts.Port {
 		log.Errorf("Hearbeat endpoint and metrics endpoint port can not be equal. Current Port for both is %d", o.HeartbeatOpts.Port)
 		isInValid = true
-	}
-
-	if o.MetricsOpts.BasicAuthEnabled {
-		if o.Username == "" {
-			log.Error("Username for metrics basic auth endpoint is empty. Please set an username")
-			isInValid = true
-		}
-
-		value, exists := os.LookupEnv(envBasicAuthUsername)
-		if !exists {
-			log.Errorf("Could not lookup \"%s\" in environment variables. Please exportdeveloperyour preferred username", envBasicAuthUsername)
-			isInValid = true
-		} else if value == "" {
-			log.Errorf("Environemt variable \"%s\" for metrics basic auth is empty. Please export your preferred username", envBasicAuthUsername)
-			isInValid = true
-		}
-
 	}
 
 	if isInValid {
