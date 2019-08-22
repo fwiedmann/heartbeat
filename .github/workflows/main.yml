@@ -62,4 +62,4 @@ jobs:
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: ./build/go-semantic-release release
+      run: ./go-semantic-release release
