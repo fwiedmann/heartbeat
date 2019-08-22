@@ -32,10 +32,14 @@ jobs:
        chmod +x go-semantic-release
        
     - name: Build binary
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run:
         CGO_ENABLED=0 go build -o heartbeat -ldflags "-w -s -X main.HeartbeatVersion=$(./go-semantic-release next)"
 
     - name: Build Docker image for master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       if: github.ref == 'refs/heads/master'
       run: | 
         docker build -t wiedmannfelix/heartbeat:latest .
