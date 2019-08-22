@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heartbeat-config
+  namespace: heartbeat
+data:
+  config.yaml: |
+    heartbeatEndpoint:
+      port: 80
+      path: "heartbeat"
+      responseCode: 200
+      responseMessage: "OK"
+    metricsEndpoint:
+      enabled: false
+      port: 9100
+      path: "/metrics"
