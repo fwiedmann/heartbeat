@@ -36,30 +36,30 @@ jobs:
         CGO_ENABLED=0 go build -o heartbeat -ldflags "-w -s -X main.HeartbeatVersion=$(./go-semantic-release next)"
 
     - name: Build Docker image for master
-      if: 'refs/heads/master' == "$GITHUB_REF"
+      if: github.ref == 'refs/heads/master'
       run: | 
         docker build -t wiedmannfelix/heartbeat:latest
         docker build -t wiedmannfelix/heartbeat:"$(./go-semantic-release next)"
 
-    - name: Push Docker image for master
-      if: 'refs/heads/master' == "$GITHUB_REF"
-      run: |
-        docker login -u wiedmannfelix -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push wiedmannfelix/heartbeat:latest
-        docker push wiedmannfelix/heartbeat:"$(./go-semantic-release next)"
+    # - name: Push Docker image for master
+    #   if: refs/heads/master == "$GITHUB_REF"
+    #   run: |
+    #     docker login -u wiedmannfelix -p ${{ secrets.DOCKER_PASSWORD }}
+    #     docker push wiedmannfelix/heartbeat:latest
+    #     docker push wiedmannfelix/heartbeat:"$(./go-semantic-release next)"
 
-    - name: Build Docker image
-      if: 'refs/heads/master' != "$GITHUB_REF"
-      run: | 
-        docker build -t wiedmannfelix/heartbeat:development
+    # - name: Build Docker image
+    #   if: refs/heads/master != "$GITHUB_REF"
+    #   run: | 
+    #     docker build -t wiedmannfelix/heartbeat:development
 
-    - name: Push Docker image
-      if: 'refs/heads/master' != "$GITHUB_REF"
-      run: |
-        docker login -u wiedmannfelix -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push wiedmannfelix/heartbeat:development
+    # - name: Push Docker image
+    #   if: refs/heads/master != 
+    #   run: |
+    #     docker login -u wiedmannfelix -p ${{ secrets.DOCKER_PASSWORD }}
+    #     docker push wiedmannfelix/heartbeat:development
 
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: ./go-semantic-release release
+      run: ./build/go-semantic-release release
