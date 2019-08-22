@@ -36,7 +36,10 @@ func createHandler(o opts.HeartbeatOpts) func(w http.ResponseWriter, r *http.Req
 		metrics.HeartbeatTotalRequests.With(prometheus.Labels{"method": r.Method}).Inc()
 
 		w.WriteHeader(o.ResponseCode)
-		w.Write([]byte(o.ResponseMessage))
+		if _, err := w.Write([]byte(o.ResponseMessage)); err != nil {
+			log.Error(err)
+		}
+
 	}
 
 }

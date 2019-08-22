@@ -9,8 +9,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const envBasicAuthUsername = "HEARTBEAT_METRICS_PASSWORD"
-
 // Error implements the error interface
 type Error struct {
 	err string
