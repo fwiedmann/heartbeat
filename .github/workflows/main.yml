@@ -46,6 +46,8 @@ jobs:
         docker build -t wiedmannfelix/heartbeat:"$(./go-semantic-release next)" .
 
     - name: Push Docker image for master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
       if: github.ref == 'refs/heads/master'
       run: |
         docker login -u wiedmannfelix -p ${{ secrets.DOCKER_PASSWORD }}
