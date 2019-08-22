@@ -38,8 +38,8 @@ jobs:
     - name: Build Docker image for master
       if: github.ref == 'refs/heads/master'
       run: | 
-        docker build -t wiedmannfelix/heartbeat:latest
-        docker build -t wiedmannfelix/heartbeat:"$(./go-semantic-release next)"
+        docker build -t wiedmannfelix/heartbeat:latest .
+        docker build -t wiedmannfelix/heartbeat:"$(./go-semantic-release next)" .
 
     - name: Push Docker image for master
       if: github.ref == 'refs/heads/master'
@@ -51,7 +51,7 @@ jobs:
     - name: Build Docker image
       if: github.ref != 'refs/heads/master'
       run: | 
-        docker build -t wiedmannfelix/heartbeat:development
+        docker build -t wiedmannfelix/heartbeat:development .
 
     - name: Push Docker image
       if: github.ref != 'refs/heads/master'
