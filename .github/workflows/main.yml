@@ -68,4 +68,4 @@ jobs:
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: ./go-semantic-release release
+      run: ./go-semantic-release release --loglevel trace
