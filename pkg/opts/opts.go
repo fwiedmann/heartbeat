@@ -9,8 +9,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const envBasicAuthUsername = "HEARTBEAT_METRICS_PASSWORD"
-
 // Error implements the error interface
 type Error struct {
 	err string
@@ -47,14 +45,15 @@ type Opts struct {
 func New(config, logLevel string) *Opts {
 	return &Opts{
 		HeartbeatOpts: HeartbeatOpts{
-			Port:            80,
+			Port:            8080,
 			ResponseCode:    200,
 			ResponseMessage: "OK",
 			Path:            "/heartbeat",
 		},
 		MetricsOpts: MetricsOpts{
-			Port: 9100,
-			Path: "/metrics",
+			Port:    9100,
+			Path:    "/metrics",
+			Enabled: true,
 		},
 		LogLevel:   logLevel,
 		ConfigFile: config,
@@ -72,7 +71,11 @@ func (o *Opts) InitOpts() error {
 	log.SetLevel(logLevel)
 	log.Debug("Check if file exists")
 	if _, err = os.Open(o.ConfigFile); err != nil {
-		return err
+		if !os.IsNotExist(err) {
+			return err
+		}
+		log.Info("No configuration was found. Using default values.")
+		return nil
 	}
 
 	fileContent, err := ioutil.ReadFile(o.ConfigFile)

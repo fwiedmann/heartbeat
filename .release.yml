@@ -1,0 +1,15 @@
+commitFormat: angular
+title: "Heartbeat release"
+branch:
+  master: release
+changelog:
+  printAll: false
+  template: ''
+  templatePath: ''
+release: 'github'
+assets:
+  - name: ./heartbeat
+    compress: false
+github:
+  repo: "heartbeat"
+  user: "fwiedmann"

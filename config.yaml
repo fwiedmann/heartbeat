@@ -1,5 +1,5 @@
 heartbeatEndpoint:
-  port: 80
+  port: 8080
   path: "heartbeat"
   responseCode: 200
   responseMessage: "OK"

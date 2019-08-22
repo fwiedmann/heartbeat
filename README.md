@@ -58,7 +58,7 @@ metricsEndpoint:
 | Endpoint  | Option           | Type   | Default vaule |
 | --------- | ---------------- | ------ | ------------- |
 | Heartbeat | path             | srting | "/heartbeat"  |
-| Heartbeat | port             | int    | 80            |
+| Heartbeat | port             | int    | 8080            |
 | Heartbeat | response message | srting | "OK"          |
 | Heartbeat | response code    | int    | 200           |
 | Metrics   | path             | srting | "/metrics"    |
