@@ -55,7 +55,9 @@ spec:
   selector:
     app: heartbeat
   ports:
-  - port: 80
+  - name: heartbeat
+    port: 80
     targetPort: 8080
-  - port: 9100
+  - name: metrics
+    port: 9100
     targetPort: 9100
