@@ -27,9 +27,9 @@ spec:
             memory: "128Mi"
             cpu: "250m"
         ports:
-        - name: heartbeat-endpoint
+        - name: heartbeat
           containerPort: 80
-        - name: metrics-endpoint
+        - name: metrics
           containerPort: 9100
         volumeMounts:
           - name: heartbeat-config
