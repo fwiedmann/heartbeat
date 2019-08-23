@@ -8,6 +8,7 @@ spec:
   selector:
     matchLabels:
       app: heartbeat
+  replicas: 1
   template:
     metadata:
       labels:
@@ -28,12 +29,13 @@ spec:
             cpu: "250m"
         ports:
         - name: heartbeat
-          containerPort: 80
+          containerPort: 8080
         - name: metrics
           containerPort: 9100
         volumeMounts:
           - name: heartbeat-config
-            mountPath: /code
+            mountPath: /code/config.yaml
+            subPath: config.yaml
 
       volumes:
           - name: heartbeat-config
