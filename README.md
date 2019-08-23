@@ -4,7 +4,6 @@
   </a>
 
   <h3 align="center">Heartbeat</h3>
-  ![badge](https://action-badges.now.sh/fwiedmann/heartbeat)
 
   <p align="center">
     Simple HTTP healthcheck endpoint with Prometheus metrics
@@ -19,6 +18,7 @@
   </p>
 </p>
 
+  ![badge](https://action-badges.now.sh/fwiedmann/heartbeat)
 
 ## Table of contents
 
