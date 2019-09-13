@@ -1,9 +1,9 @@
 heartbeatEndpoint:
   port: 8080
-  path: "heartbeat"
+  path: "/heartbeat"
   responseCode: 200
   responseMessage: "OK"
 metricsEndpoint:
-  enabled: false
+  enabled: true
   port: 9100
   path: "/metrics"

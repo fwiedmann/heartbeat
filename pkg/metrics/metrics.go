@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fwiedmann/heartbeat/pkg/template"
+
 	"github.com/fwiedmann/heartbeat/pkg/opts"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -42,10 +44,27 @@ func init() {
 
 // StartMetricsEndpoint starts metrics endpoint
 func StartMetricsEndpoint(o opts.MetricsOpts) error {
-	listenerPort := fmt.Sprintf(":%d", o.Port)
-	http.Handle(o.Path, promhttp.Handler())
-	if err := http.ListenAndServe(listenerPort, promhttp.HandlerFor(registry, promhttp.HandlerOpts{})); err != nil {
+
+	tmpl, err := template.New("Metrics endpoint", o.Path)
+	if err != nil {
 		return err
 	}
+	metricsSiteInfoHandler, err := tmpl.GetTempaltedHandler()
+	if err != nil {
+		return err
+	}
+
+	listenerPort := fmt.Sprintf(":%d", o.Port)
+
+	server := http.NewServeMux()
+	server.Handle(o.Path, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	if o.Path != "/" {
+		server.Handle("/", metricsSiteInfoHandler)
+	}
+
+	if err := http.ListenAndServe(listenerPort, server); err != nil {
+		return err
+	}
+
 	return nil
 }
