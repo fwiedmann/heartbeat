@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/fwiedmann/heartbeat/pkg/template"
+
 	"github.com/fwiedmann/heartbeat/pkg/metrics"
 
 	log "github.com/sirupsen/logrus"
@@ -15,24 +17,38 @@ import (
 
 // StartHeartbeatEndpoint starts the heartbeat endpoint
 func StartHeartbeatEndpoint(o opts.HeartbeatOpts) error {
+	tmpl, err := template.New("Heartbeat endpoint", o.Path)
+
+	if err != nil {
+		return err
+	}
+
 	log.Infof("Starting heartbeat endpoint on port: \"%d\", path: \"%s\"", o.Port, o.Path)
 
 	listenerPort := fmt.Sprintf(":%d", o.Port)
-	heartbeatHandler := createHandler(o)
+	heartbeatHandler := createEndpointHandler(o)
+	heartbeatSiteInfoHandler, err := tmpl.GetTempaltedHandler()
 
-	http.HandleFunc(o.Path, heartbeatHandler)
-	if err := http.ListenAndServe(listenerPort, nil); err != nil {
+	if err != nil {
+		return err
+	}
+	server := http.NewServeMux()
+	server.Handle(o.Path, heartbeatHandler)
+	if o.Path != "/" {
+		server.Handle("/", heartbeatSiteInfoHandler)
+	}
+	if err := http.ListenAndServe(listenerPort, server); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func createHandler(o opts.HeartbeatOpts) func(w http.ResponseWriter, r *http.Request) {
+func createEndpointHandler(o opts.HeartbeatOpts) http.Handler {
 	log.Debugf("Created HeartbeatHandler with response code: \"%d\", response message: \"%s\"", o.ResponseCode, o.ResponseMessage)
-	return func(w http.ResponseWriter, r *http.Request) {
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hostWithoutPort := getHostWithoutPort(r.RemoteAddr)
-		log.Info(hostWithoutPort)
 
 		log.Infof("Incoming request: Host \"%s\", Method: \"%s\"  ", hostWithoutPort, r.Method)
 
@@ -44,7 +60,7 @@ func createHandler(o opts.HeartbeatOpts) func(w http.ResponseWriter, r *http.Req
 			log.Error(err)
 		}
 
-	}
+	})
 
 }
 

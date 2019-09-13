@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	nested "github.com/antonfisher/nested-logrus-formatter"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -63,14 +64,12 @@ func New(config, logLevel string) *Opts {
 // InitOpts initialize hearbeats options from the configuration file
 func (o *Opts) InitOpts() error {
 
-	logLevel, err := log.ParseLevel(o.LogLevel)
-	if err != nil {
+	if err := setLogLevel(o.LogLevel); err != nil {
 		return err
 	}
 
-	log.SetLevel(logLevel)
 	log.Debug("Check if file exists")
-	if _, err = os.Open(o.ConfigFile); err != nil {
+	if _, err := os.Open(o.ConfigFile); err != nil {
 		if !os.IsNotExist(err) {
 			return err
 		}
@@ -124,4 +123,18 @@ func checkHandlerPath(path string) string {
 		return fmt.Sprintf("/%s", path)
 	}
 	return path
+}
+
+func setLogLevel(level string) error {
+	logLevel, err := log.ParseLevel(level)
+	if err != nil {
+		return err
+	}
+
+	log.SetLevel(logLevel)
+	log.SetFormatter(&log.TextFormatter{ForceColors: true})
+	log.SetFormatter(&nested.Formatter{
+		HideKeys: true,
+	})
+	return nil
 }
