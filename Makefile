@@ -10,3 +10,6 @@ run:
 
 build-docker:
 	docker build -t heartbeat .
+
+run-docker: build-docker
+	docker run -it -p 8080:8080 -p 9100:9100 heartbeat
