@@ -31,7 +31,7 @@ func StartHeartbeatEndpoint(o opts.HeartbeatOpts) error {
 func createHandler(o opts.HeartbeatOpts) func(w http.ResponseWriter, r *http.Request) {
 	log.Debugf("Created HeartbeatHandler with response code: \"%d\", response message: \"%s\"", o.ResponseCode, o.ResponseMessage)
 	return func(w http.ResponseWriter, r *http.Request) {
-		hostWithoutPort := getHostWithoutPort(r.Host)
+		hostWithoutPort := getHostWithoutPort(r.RemoteAddr)
 		log.Info(hostWithoutPort)
 
 		log.Infof("Incoming request: Host \"%s\", Method: \"%s\"  ", hostWithoutPort, r.Method)
