@@ -28,7 +28,7 @@ jobs:
     
     - name: Init go-semantic-release
       run: |
-       wget  https://github.com/Nightapes/go-semantic-release/releases/download/1.3.0/go-semantic-release
+       wget  https://github.com/Nightapes/go-semantic-release/releases/download/v1.3.0/go-semantic-release
        chmod +x go-semantic-release
        
     - name: Build binary
