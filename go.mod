@@ -3,7 +3,7 @@ module github.com/fwiedmann/heartbeat
 go 1.14
 
 require (
-	github.com/antonfisher/nested-logrus-formatter v1.3.0
+	github.com/antonfisher/nested-logrus-formatter v1.3.1
 	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
 	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/prometheus/client_golang v1.7.1
